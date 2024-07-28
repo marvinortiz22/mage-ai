@@ -1,9 +1,0 @@
-config:
-  account: null
-  database: null
-  password: null
-  role: null
-  schema: null
-  username: null
-  warehouse: null
-source: snowflake

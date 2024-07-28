@@ -1,142 +1,100 @@
 blocks:
 - all_upstream_blocks_executed: true
   color: null
-  configuration:
-    data_provider: snowflake
-    data_provider_database: agrosantanadb
-    data_provider_profile: default
-    data_provider_schema: raw
-    data_provider_table: products
-    dbt: {}
-    disable_query_preprocessing: false
-    export_write_policy: append
-    limit: 1000
-    use_raw_sql: true
-  downstream_blocks:
-  - windy_fire
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: sql
-  name: gracious bird
-  retry_config: null
-  status: executed
-  timeout: null
-  type: transformer
-  upstream_blocks: []
-  uuid: gracious_bird
-- all_upstream_blocks_executed: true
-  color: null
-  configuration:
-    data_provider: snowflake
-    data_provider_database: agrosantanadb
-    data_provider_profile: default
-    data_provider_schema: raw
-    export_write_policy: append
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: windy fire
-  retry_config: null
-  status: executed
-  timeout: null
-  type: data_exporter
-  upstream_blocks:
-  - gracious_bird
-  uuid: windy_fire
-- all_upstream_blocks_executed: true
-  color: null
-  configuration:
-    data_provider: snowflake
-    data_provider_database: agrosantanadb
-    data_provider_profile: default
-    data_provider_schema: raw
-    data_provider_table: products
-    dbt: {}
-    disable_query_preprocessing: true
-    export_write_policy: replace
-    limit: 1000
-    use_raw_sql: true
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: sql
-  name: load product
-  retry_config: null
-  status: executed
-  timeout: null
-  type: data_loader
-  upstream_blocks: []
-  uuid: load_product
-- all_upstream_blocks_executed: true
-  color: null
-  configuration:
-    data_provider: snowflake
-    data_provider_database: agrosantanadb
-    data_provider_profile: default
-    data_provider_schema: raw
-    dbt: {}
-    disable_query_preprocessing: true
-    export_write_policy: replace
-    limit: 1000
-    use_raw_sql: true
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: sql
-  name: musical haiku
-  retry_config: null
-  status: executed
-  timeout: null
-  type: data_exporter
-  upstream_blocks: []
-  uuid: musical_haiku
-- all_upstream_blocks_executed: true
-  color: null
-  configuration:
-    data_provider: snowflake
-    data_provider_database: agrosantanadb
-    data_provider_profile: default
-    data_provider_schema: raw
-    export_write_policy: replace
+  configuration: {}
   downstream_blocks:
   - script_transformer
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: valorous bard
+  name: load_csv
   retry_config: null
-  status: failed
+  status: executed
   timeout: null
   type: data_loader
   upstream_blocks: []
-  uuid: valorous_bard
-- all_upstream_blocks_executed: false
+  uuid: load_csv
+- all_upstream_blocks_executed: true
   color: null
-  configuration: {}
-  downstream_blocks: []
+  configuration:
+    file_source:
+      path: transformers/script_transformer.py
+  downstream_blocks:
+  - csv_to_raw
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: SCRIPT TRANSFORMER
+  name: script_transformer
   retry_config: null
   status: executed
   timeout: null
   type: transformer
   upstream_blocks:
-  - valorous_bard
+  - load_csv
   uuid: script_transformer
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    data_provider: snowflake
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    file_path: transformers/csv_to_raw.sql
+    file_source:
+      path: transformers/csv_to_raw.sql
+    limit: 1000
+    upstream_block_configuration:
+      script_transformer:
+        table_name: sales_transactions_stagging
+    use_raw_sql: true
+  downstream_blocks:
+  - raw_to_clean
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: csv to raw
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - script_transformer
+  uuid: csv_to_raw
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    data_provider: snowflake
+    data_provider_profile: default
+    dbt: {}
+    disable_query_preprocessing: true
+    export_write_policy: append
+    file_path: data_exporters/raw_to_clean.sql
+    file_source:
+      path: data_exporters/raw_to_clean.sql
+    limit: 1000
+    use_raw_sql: true
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: sql
+  name: raw to clean
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - csv_to_raw
+  uuid: raw_to_clean
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
-created_at: '2024-07-26 16:19:54.039803+00:00'
+created_at: '2024-07-28 21:24:52.250023+00:00'
 data_integration: null
 description: null
 executor_config: {}

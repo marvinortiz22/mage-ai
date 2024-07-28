@@ -18,12 +18,10 @@ def transform(data, *args, **kwargs):
     df_limpieza.columns = new_names
     df_limpieza = df_limpieza.applymap(transform_data)
 
-    df_limpieza.to_csv('Limpieza_Ventas.csv', index=False)
-
     return df_limpieza
 
 def transformCol(col_name):
-    col_name = col_name.upper()
+    col_name = col_name.lower()
     col_name = unidecode(col_name)
     col_name = col_name.replace(' ', '_')
     col_name = re.sub(r'\W+', '', col_name)

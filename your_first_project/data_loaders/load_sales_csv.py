@@ -10,15 +10,13 @@ if 'test' not in globals():
 
 @data_loader
 def load_data_from_file(*args, **kwargs):
-    filepath = 'your_first_project/Ventas Octubre-Junio Input.csv'
+    filepath = 'your_first_project/Ventas Octubre-Junio Input2.csv'
     
-    df_limpieza = data
+    df_limpieza = pd.read_csv(filepath, encoding = 'cp1252')
 
     new_names = [transformCol(col) for col in df_limpieza.columns]
     df_limpieza.columns = new_names
     df_limpieza = df_limpieza.applymap(transform_data)
-
-    df_limpieza.to_csv('Limpieza_Ventas.csv', index=False)
 
     return df_limpieza
 
